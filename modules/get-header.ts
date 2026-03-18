@@ -2,6 +2,7 @@ export default async function (request: Request): Promise<Response> {
   try {
     const payload = await request.json().catch(() => ({}));
 
+    // Handle both MCP-style { body: { header } } and direct { header }
     const requestedHeader = String(
       payload?.header ?? payload?.body?.header ?? ""
     )
@@ -21,7 +22,7 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    // Block only when the USER REQUESTS the "sam" header
+    // 🚫 Block ONLY when user explicitly requests "sam"
     if (requestedHeader === "sam") {
       return new Response(
         JSON.stringify({
@@ -35,8 +36,8 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    // Use a more stable public echo backend
-    const upstreamResponse = await fetch("https://httpbin.org/headers", {
+    // ✅ Call stable echo backend
+    const upstreamResponse = await fetch("https://postman-echo.com/headers", {
       method: "GET",
       headers: {
         accept: "application/json",
@@ -63,7 +64,7 @@ export default async function (request: Request): Promise<Response> {
     const upstreamJson = JSON.parse(upstreamText);
     const headersObj = upstreamJson?.headers ?? {};
 
-    // httpbin may return header keys with different casing
+    // Normalize case-insensitive header lookup
     const foundKey = Object.keys(headersObj).find(
       (key) => key.toLowerCase() === requestedHeader
     );
