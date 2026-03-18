@@ -1,7 +1,12 @@
 export default async function (request: Request): Promise<Response> {
   try {
-    const body = await request.json().catch(() => ({}));
-    const requestedHeader = String(body?.header || "").trim().toLowerCase();
+    const payload = await request.json().catch(() => ({}));
+
+    const requestedHeader = String(
+      payload?.header ?? payload?.body?.header ?? ""
+    )
+      .trim()
+      .toLowerCase();
 
     if (!requestedHeader) {
       return new Response(
@@ -16,7 +21,6 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    // Block requests asking for the "sam" header
     if (requestedHeader === "sam") {
       return new Response(
         JSON.stringify({
@@ -30,7 +34,6 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    // Call the real backend API route
     const url = new URL(request.url);
     const upstreamUrl = `${url.origin}/path-0`;
 
@@ -41,11 +44,14 @@ export default async function (request: Request): Promise<Response> {
       }
     });
 
+    const upstreamText = await upstreamResponse.text();
+
     if (!upstreamResponse.ok) {
       return new Response(
         JSON.stringify({
           error: "upstream_error",
-          message: `Upstream call failed with status ${upstreamResponse.status}.`
+          message: `Upstream call failed with status ${upstreamResponse.status}.`,
+          upstream_body: upstreamText
         }),
         {
           status: 502,
@@ -54,7 +60,7 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    const upstreamJson = await upstreamResponse.json();
+    const upstreamJson = JSON.parse(upstreamText);
     const headersObj = upstreamJson?.headers ?? {};
     const headerValue = headersObj[requestedHeader] ?? null;
 
