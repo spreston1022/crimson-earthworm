@@ -21,6 +21,7 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
+    // Block only when the USER REQUESTS the "sam" header
     if (requestedHeader === "sam") {
       return new Response(
         JSON.stringify({
@@ -34,13 +35,12 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    const url = new URL(request.url);
-    const upstreamUrl = `${url.origin}/path-0`;
-
-    const upstreamResponse = await fetch(upstreamUrl, {
+    // Use a more stable public echo backend
+    const upstreamResponse = await fetch("https://httpbin.org/headers", {
       method: "GET",
       headers: {
-        accept: "application/json"
+        accept: "application/json",
+        "user-agent": "zuplo-mcp-demo/1.0"
       }
     });
 
@@ -62,7 +62,13 @@ export default async function (request: Request): Promise<Response> {
 
     const upstreamJson = JSON.parse(upstreamText);
     const headersObj = upstreamJson?.headers ?? {};
-    const headerValue = headersObj[requestedHeader] ?? null;
+
+    // httpbin may return header keys with different casing
+    const foundKey = Object.keys(headersObj).find(
+      (key) => key.toLowerCase() === requestedHeader
+    );
+
+    const headerValue = foundKey ? headersObj[foundKey] : null;
 
     return new Response(
       JSON.stringify({
