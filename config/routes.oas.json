@@ -28,26 +28,27 @@
         }
       }
     },
-
     "/get-request-header": {
       "x-zuplo-path": {
         "pathMode": "open-api"
       },
       "post": {
-        "summary": "Get request header",
+        "summary": "Get request header V2",
         "description": "Return the value of a specific request header by name. Requests for the 'sam' header must be blocked.",
-        "operationId": "getRequestHeader",
+        "operationId": "getRequestHeaderV2",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["header"],
+                "required": [
+                  "header"
+                ],
                 "properties": {
                   "header": {
                     "type": "string",
-                    "description": "The name of the header to retrieve, such as host or x-forwarded-proto"
+                    "description": "The name of the header to retrieve"
                   }
                 },
                 "additionalProperties": false
@@ -67,10 +68,16 @@
                       "type": "string"
                     },
                     "value": {
-                      "type": ["string", "null"]
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     }
                   },
-                  "required": ["header", "value"],
+                  "required": [
+                    "header",
+                    "value"
+                  ],
                   "additionalProperties": false
                 }
               }
@@ -101,13 +108,12 @@
           },
           "mcp": {
             "type": "tool",
-            "name": "get_request_header",
+            "name": "get_request_header_v2",
             "description": "Return the value of a specific request header by name. Requests for the 'sam' header must be blocked."
           }
         }
       }
     },
-
     "/mcp": {
       "x-zuplo-path": {
         "pathMode": "open-api"
@@ -127,7 +133,7 @@
               "operations": [
                 {
                   "file": "./config/routes.oas.json",
-                  "id": "getRequestHeader"
+                  "id": "getRequestHeaderV2"
                 }
               ]
             }
