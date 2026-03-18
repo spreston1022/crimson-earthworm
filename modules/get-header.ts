@@ -1,7 +1,12 @@
 export default async function (request: Request): Promise<Response> {
   try {
-    const body = await request.json().catch(() => ({}));
-    const requestedHeader = String(body?.header || "").trim().toLowerCase();
+    const payload = await request.json().catch(() => ({}));
+
+    const requestedHeader = String(
+      payload?.header ?? payload?.body?.header ?? ""
+    )
+      .trim()
+      .toLowerCase();
 
     if (!requestedHeader) {
       return new Response(
@@ -16,7 +21,6 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    // Block requests asking for the "sam" header
     if (requestedHeader === "sam") {
       return new Response(
         JSON.stringify({
@@ -30,11 +34,7 @@ export default async function (request: Request): Promise<Response> {
       );
     }
 
-    // Call the real backend API route
-    const url = new URL(request.url);
-    const upstreamUrl = `${url.origin}/path-0`;
-
-    const upstreamResponse = await fetch(upstreamUrl, {
+    const upstreamResponse = await fetch("https://echo.zuplo.io/path-0", {
       method: "GET",
       headers: {
         accept: "application/json"
