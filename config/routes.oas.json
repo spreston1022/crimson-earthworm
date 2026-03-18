@@ -1,0 +1,86 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My Zuplo API"
+  },
+  "paths": {
+    "/path-0": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "New Route",
+        "description": "",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "urlForwardHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "baseUrl": "${env.BASE_URL}"
+            }
+          },
+          "policies": {
+            "inbound": []
+          },
+          "mcp": {
+            "type": "tool",
+            "name": "",
+            "description": ""
+          }
+        },
+        "operationId": "new-route-1581d80a"
+      }
+    },
+    "/mcp": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "post": {
+        "summary": "MCP Server",
+        "description": "Default MCP Server",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "mcpServerHandler",
+            "module": "$import(@zuplo/runtime)",
+            "options": {
+              "operations": [
+                {
+                  "file": "./config/routes.oas.json",
+                  "id": "new-route-b220b826"
+                }
+              ]
+            }
+          },
+          "policies": {
+            "inbound": []
+          }
+        },
+        "operationId": "4d8323ef-a8d0-40aa-a6b1-2e70f7f7c587"
+      }
+    },
+    "/get-request-header": {
+      "x-zuplo-path": {
+        "pathMode": "open-api"
+      },
+      "get": {
+        "summary": "New Route",
+        "description": "Return the value of a specific request header by name. Use this when the user asks for the value of a header such as host or x-forwarded-proto. Requests for the 'sam' header must be blocked.",
+        "x-zuplo-route": {
+          "corsPolicy": "none",
+          "handler": {
+            "export": "default",
+            "module": "$import(./modules/get-header)",
+            "options": {}
+          },
+          "policies": {
+            "inbound": []
+          }
+        },
+        "operationId": "new-route-b220b826"
+      }
+    }
+  }
+}
