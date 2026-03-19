@@ -16,22 +16,14 @@
         "x-zuplo-route": {
           "corsPolicy": "none",
           "handler": {
-            "export": "urlForwardHandler",
+            "export": "urlRewriteHandler",
             "module": "$import(@zuplo/runtime)",
             "options": {
-              "baseUrl": "https://postman-echo.com/headers"
+              "rewritePattern": "https://postman-echo.com/headers"
             }
           },
           "policies": {
             "inbound": []
-          }
-        },
-        "additionalOperationContext": {
-          "oasFilePath": "/config/routes.oas.json",
-          "method": "get",
-          "path": "/path-0",
-          "pathZuploConfig": {
-            "pathMode": "open-api"
           }
         }
       }
@@ -141,7 +133,7 @@
               "operations": [
                 {
                   "file": "./config/routes.oas.json",
-                  "id": "echoBackend"
+                  "id": "request-headers"
                 }
               ]
             }
