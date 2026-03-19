@@ -11,19 +11,27 @@
       },
       "get": {
         "summary": "Backend Echo Route",
-        "description": "Forwards request to echo.zuplo.io/path-0",
-        "operationId": "echoBackend",
+        "description": "",
+        "operationId": "request-headers",
         "x-zuplo-route": {
           "corsPolicy": "none",
           "handler": {
             "export": "urlForwardHandler",
             "module": "$import(@zuplo/runtime)",
             "options": {
-              "baseUrl": "https://echo.zuplo.io"
+              "baseUrl": "https://postman-echo.com/headers"
             }
           },
           "policies": {
             "inbound": []
+          }
+        },
+        "additionalOperationContext": {
+          "oasFilePath": "/config/routes.oas.json",
+          "method": "get",
+          "path": "/path-0",
+          "pathZuploConfig": {
+            "pathMode": "open-api"
           }
         }
       }
@@ -133,7 +141,7 @@
               "operations": [
                 {
                   "file": "./config/routes.oas.json",
-                  "id": "getRequestHeaderV2"
+                  "id": "echoBackend"
                 }
               ]
             }
